@@ -1,38 +1,47 @@
 import java.io.*;
 
-public class Lab2 {
+public class Lab_2 {
 
 	public static void main(String[] args) {
 		int x = 0;
 		int y = 0;
 		int [][] Board = new int[10][10];
 		String[] contents = readFile("DIRECTIONS.txt");		
-		
+	
 		try {
 			x = Integer.parseInt(contents[0]);
 			y = Integer.parseInt(contents[1]);
+				
+			if(x < 0 || x>9 || y < 0 || y > 9) {
+				System.out.println("AInvalid data");
+				System.exit(0);
+			}
+				
 		}catch(Exception e) {
-			System.out.println("Invalid data");
+			System.out.println("BInvalid data");
 			System.exit(0);
 		}
 		Point p = new Point(x,y);
 		
-		for(String i : contents) {
-			if(i.equals("N")) {
+		for(int i = 2; i < contents.length; i++) {
+			if(contents[i].equals("N")) {
 				Point.North(Board, p);
-			} if(i.equals("S")) {
+			}else if(contents[i].equals("S")) {
 				Point.South(Board, p);
-			} if(i.equals("E")) {
+			}else if(contents[i].equals("E")) {
 				Point.East(Board, p);
-			} if(i.equals("W")) {
+			}else if(contents[i].equals("W")) {
 				Point.West(Board, p);
-			} else {
+			} else if(contents[i].equalsIgnoreCase("End of File")){
+				System.out.println(Point.sum(Board));
+				System.exit(0);
+			}else {
 				System.out.println("Invalid Data");
 				System.exit(0);
 			}
 		}
 		
-		Point.sum(Board);
+		
 		
 	}//main
 	
@@ -54,26 +63,28 @@ public class Lab2 {
 		            	contents = new String[length];
 		            	
 		            in.reset(); // rewind the reader to the start of file
-		            	System.out.println(length);
+		            	
 		            // read in contents of file and print to screen
 		            int i = 0;
-		            System.out.println("4our");
+		            
 		            while (i < length) {
-		            	if(i>=2) {
-		            		if(in.readLine().equals("N") || in.readLine().equals("S") || in.readLine().equals("E") || in.readLine().equals("W")) {
-		            			contents[i] = in.readLine();
-		            			System.out.println(contents[i]);
+		            	String C = in.readLine();
+		            	if(i>=2 && i < contents.length-1) {		            		
+		            		if(C.equals("N") || C.equals("S") || C.equals("E") || C.equals("W")) {
+		            			contents[i] = C;
 		            		} else {
 		            			System.out.println("InVaLiD dAtA");
 		            			System.exit(0);
 		            		}
 		            	}
-		            	contents[i] = in.readLine();
+		        
+		            	contents[i] = C;
 		              i++;
 		            }
-		            System.out.println("w");
+		            
 		            in.close();
 		        } catch (Exception e) {
+		        	e.printStackTrace();
 		            System.out.println("File Input Error");
 		            System.exit(0);
 		        }
