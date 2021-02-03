@@ -47,7 +47,8 @@ public class Point {
 		return total;
 	}//Board
 	
-	boolean North(int[][] board, Point p) {
+	static boolean North(int[][] board, Point p) {
+		
 		try {
 				p.setY(p.getY()-1);
 			if(board[p.getX()][p.getY()] == 0) {
@@ -58,10 +59,12 @@ public class Point {
 		} catch (Exception e) {
 			return false;
 		}
+		
 		return true;
 	}//North
 	
-	boolean South(int[][] board, Point p) {
+	static boolean South(int[][] board, Point p) {
+		
 		try {
 				p.setY(p.getY()+1);
 			if(board[p.getX()][p.getY()] == 0) {
@@ -72,10 +75,12 @@ public class Point {
 		} catch (Exception e) {
 			return false;
 		}
+		
 		return true;
 	}//South
 	
-	boolean East(int[][] board, Point p) {
+	static boolean East(int[][] board, Point p) {
+		
 		try {
 				p.setX(p.getX()+1);
 			if(board[p.getX()][p.getY()] == 0) {
@@ -86,10 +91,11 @@ public class Point {
 		} catch (Exception e) {
 			return false;
 		}
+		
 		return true;
 	}//West
 	
-	boolean West(int[][] board, Point p) {
+	static boolean West(int[][] board, Point p) {
 		try {
 				p.setX(p.getX()-1);
 			if(board[p.getX()][p.getY()] == 0) {
