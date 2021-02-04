@@ -1,78 +1,79 @@
+import java.util.*;
 public class Lab3 {
 
 	public static void main(String[] args) {
-		System.out.println(rFactorial(8));
-		System.out.println(iFactorial(8));
-		System.out.println(IisPrime(101));
-		System.out.println(RisPrime(101, 2));
-
+		int b = 2;
+		Scanner in = new Scanner(System.in);
+		System.out.println("Enter an Integer: ");
+		int a = in.nextInt();
+		System.out.println("The factorial of " + a + " is " + iFactorial(a) + " ");
+		System.out.println("The factorial of " + a + " is " + rFactorial(a) + " ");	
+		System.out.println("Enter an Integer: ");
+		a = in.nextInt();
+		System.out.println("Is " + a + " prime?" + IisPrime(a));
+		System.out.println("Is " + a + " prime?" + RisPrime(a, b));
+		in.close();
 	}//main
 	
 	public static long rFactorial(int n) {
-		int i = n;
-		long startTime = System.currentTimeMillis();
+
+		long startTime = System.nanoTime();
 		long elapsedTime;
-		if(i == 0){
-			elapsedTime = System.currentTimeMillis()-startTime;
-			System.out.println(elapsedTime);
+		if(n == 0){
+			elapsedTime = System.nanoTime()-startTime;
+			System.out.println("Elapsed time: " + elapsedTime + "ns");
 			return 1;
-		} else if(i == 1) {
-			elapsedTime = System.currentTimeMillis()-startTime;
-			System.out.println(elapsedTime);
+		} else if(n == 1) {
+			elapsedTime = System.nanoTime()-startTime;
+			System.out.println("Elapsed time: " + elapsedTime + "ns");
 			return (long)n;
 		} else {
-			return (long)(i * rFactorial(n-1));
+			return (long)(n * rFactorial(n-1));
 		}
 		
 	}//rFactorial
 	
-	public static int iFactorial(int n) {
-		long startTime = System.currentTimeMillis();
+	public static long iFactorial(int n) {
+		long startTime = System.nanoTime();
 		for(int i = n-1; i > 1; i--) {
 			n *= i;
 		} 
-		long elapsedTime = System.currentTimeMillis()-startTime;
-		System.out.println(elapsedTime);
-		return n;
+		long elapsedTime = System.nanoTime()-startTime;
+		System.out.println("Elapsed time: " + elapsedTime + "ns");
+		return (long)n;
 	}//iFactorial
 	
 	public static boolean IisPrime(int n) {
 		int i = 2;
-		long startTime = System.currentTimeMillis();
+		long startTime = System.nanoTime();
 		long elapsedTime;
 		
 			while(i < n) {
 				if(n % i == 0) {
-					elapsedTime = System.currentTimeMillis()-startTime;
-					System.out.println(elapsedTime);
+					elapsedTime = System.nanoTime()-startTime;
+					System.out.println("Elapsed time: " + elapsedTime + "ns");
 					return false;
 				}	
 				i++;
 			}
-		elapsedTime = System.currentTimeMillis()-startTime;
-		System.out.println(elapsedTime);
+		elapsedTime = System.nanoTime()-startTime;
+		System.out.println("Elapsed time: " + elapsedTime);
 		return true;
 	}//IisPrime
 	
-	public static boolean RisPrime(int n, int i) {
-			
-			long startTime = System.currentTimeMillis();
-			long elapsedTime;
-				if(n % i == 0) {
-					elapsedTime = System.currentTimeMillis()-startTime;
-					System.out.println(elapsedTime);
-					return false;
-				}else if(i < n) {
-					RisPrime(n, i+1);
-					return true;
-				} else {
-					elapsedTime = System.currentTimeMillis()-startTime;
-					System.out.println(elapsedTime);
-				}	
-			
-		return true;	
-		
-	}//RisPrime
+	static boolean RisPrime(int n, int i) { 
+  
+        // Base cases 
+        if (n <= 2) 
+            return (n == 2) ? true : false; 
+        if (n % i == 0) 
+            return false; 
+        if (i * i > n) 
+            return true; 
+       
+        // Check for next divisor 
+        return RisPrime(n, i + 1); 
+    }//RisPrime 
 	
 
 }//Lab3
