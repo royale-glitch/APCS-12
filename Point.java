@@ -29,9 +29,9 @@ public class Point {
 	}
 	
 	static void init(int[][] Board, Point p) {
-		for(int[] i : Board) {
-			for(int j : i) {
-				j = 0;
+		for(int i = 0; i < Board.length; i++) {
+			for(int j = 0; j < Board[i].length; j++) {
+				Board[i][j] = 0;
 			}
 		}
 		
