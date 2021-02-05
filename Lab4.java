@@ -1,6 +1,5 @@
 import java.util.*;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 public class Lab4 {
 
 	public static void main(String[] args) {
