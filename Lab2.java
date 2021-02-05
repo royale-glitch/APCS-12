@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Lab2 {
+public class Lab_2 {
 
 	public static void main(String[] args) {
 		int x = 0;
@@ -28,13 +28,13 @@ public class Lab2 {
 		for(int i = 2; i < contents.length; i++) {
 			
 			if(contents[i].equals("N")) {
-				Point.North(Board, p);				
+				Point.North(Board, p);					
 			}else if(contents[i].equals("S")) {
-				Point.South(Board, p);				
+				Point.South(Board, p);					
 			}else if(contents[i].equals("E")) {
-				Point.East(Board, p);				
+				Point.East(Board, p);				;
 			}else if(contents[i].equals("W")) {
-				Point.West(Board, p);
+				Point.West(Board, p);				
 			} else if(contents[i].equalsIgnoreCase("End of File")){
 				System.out.println(Point.sum(Board));
 				System.exit(0);
@@ -70,7 +70,7 @@ public class Lab2 {
 		            
 		            while (i < length) {
 		            	String C = in.readLine();
-		            	if(i > 1 && i < contents.length) {		            		
+		            	if(i > 1 && i < contents.length-1) {		            		
 		            		
 		            		if(C.equals("N") || C.equals("S") || C.equals("E") || C.equals("W")) {
 		            			contents[i] = C;
@@ -81,7 +81,6 @@ public class Lab2 {
 		            		}
 		            	}		        
 		            	contents[i] = C;
-		            	System.out.println(contents[i]);
 		              i++;
 		            }//while 
 		            
