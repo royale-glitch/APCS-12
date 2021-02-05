@@ -7,30 +7,26 @@ public class Lab3 {
 		System.out.println("Enter an Integer: ");
 		int a = in.nextInt();
 		System.out.println("The factorial of " + a + " is " + iFactorial(a) + " ");
-		System.out.println("The factorial of " + a + " is " + rFactorial(a) + " ");	
+		long startTime = System.nanoTime();
+		System.out.println("The factorial of " + a + " is " + rFactorial(a) + " ");
+		System.out.println("Elapsed time: " + (System.nanoTime()-startTime) + " ns");		
 		System.out.println("Enter an Integer: ");
 		a = in.nextInt();
 		System.out.println("Is " + a + " prime?" + IisPrime(a));
+		long startTime2 = System.nanoTime();
 		System.out.println("Is " + a + " prime?" + RisPrime(a, b));
+		System.out.println("Elapsed time: " + (System.nanoTime()-startTime2) + " ns");	
 		in.close();
 	}//main
 	
 	public static long rFactorial(int n) {
-
-		long startTime = System.nanoTime();
-		long elapsedTime;
-		if(n == 0){
-			elapsedTime = System.nanoTime()-startTime;
-			System.out.println("Elapsed time: " + elapsedTime + "ns");
-			return 1;
-		} else if(n == 1) {
-			elapsedTime = System.nanoTime()-startTime;
-			System.out.println("Elapsed time: " + elapsedTime + "ns");
-			return (long)n;
-		} else {
-			return (long)(n * rFactorial(n-1));
-		}
 		
+		if (n >= 1) {
+            return n * rFactorial(n - 1);
+		} else {
+            return 1;
+		}  
+ 		
 	}//rFactorial
 	
 	public static long iFactorial(int n) {
