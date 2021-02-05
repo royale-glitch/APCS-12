@@ -34,7 +34,7 @@ public class Point {
 				Board[i][j] = 0;
 			}
 		}
-		
+		Board[p.getX()][p.getY()] = 1;
 	}//init
 	
 	static int sum(int[][] Board) {
@@ -47,7 +47,7 @@ public class Point {
 		return total;
 	}//Board
 	
-	static boolean North(int[][] board, Point p) {
+	static boolean West(int[][] board, Point p) {
 		
 		try {
 				p.setY(p.getY()-1);
@@ -57,13 +57,15 @@ public class Point {
 				board[p.getX()][p.getY()] *= 2;
 			}
 		} catch (Exception e) {
+			System.out.println("iNvaLiD dAtA");
+			System.exit(0);
 			return false;
 		}
 		
 		return true;
 	}//North
 	
-	static boolean South(int[][] board, Point p) {
+	static boolean East(int[][] board, Point p) {
 		
 		try {
 				p.setY(p.getY()+1);
@@ -73,13 +75,15 @@ public class Point {
 				board[p.getX()][p.getY()] *= 2;
 			}
 		} catch (Exception e) {
+			System.out.println("iNvaLiD dAtA");
+			System.exit(0);
 			return false;
 		}
 		
 		return true;
 	}//South
 	
-	static boolean East(int[][] board, Point p) {
+	static boolean South(int[][] board, Point p) {
 		
 		try {
 				p.setX(p.getX()+1);
@@ -89,13 +93,15 @@ public class Point {
 				board[p.getX()][p.getY()] *= 2;
 			}
 		} catch (Exception e) {
+			System.out.println("iNvaLiD dAtA");
+			System.exit(0);
 			return false;
 		}
 		
 		return true;
 	}//West
 	
-	static boolean West(int[][] board, Point p) {
+	static boolean North(int[][] board, Point p) {
 		try {
 				p.setX(p.getX()-1);
 			if(board[p.getX()][p.getY()] == 0) {
@@ -104,6 +110,8 @@ public class Point {
 				board[p.getX()][p.getY()] *= 2;
 			}
 		} catch (Exception e) {
+			System.out.println("iNvaLiD dAtA");
+			System.exit(0);
 			return false;
 		}
 		return true;
