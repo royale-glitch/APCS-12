@@ -39,11 +39,11 @@ public class Lab5 {
 		
 		
 		System.out.println("Average Search Times: ");
-		System.out.println("             | 10           | 100             | 1 000 000");
+		System.out.println("             | 10           | 100          | 1 000 000");
 		System.out.println("---------------------------------------------------------");
-		System.out.println("Linear Src   |" + linearSearch(a10s) + "          ns|" + linearSearch(a100s)   + "          ns| "+ linearSearch(a1000000s) +"ns|");
+		System.out.println("Linear Src   |" + linearSearch(a10s) + "       ns|" + linearSearch(a100s)   + "        ns| "+ linearSearch(a1000000s) +"ns|");
 		System.out.println("---------------------------------------------------------");
-		System.out.println("Binary Src   |" + iBinarySearch(a10s, 6969) + "           ns|" + iBinarySearch(a100s, 6969)   + "          ns| "+ iBinarySearch(a1000000s, 6969) +"ns|");
+		System.out.println("Binary Src   |" + iBinarySearch(a10s, 6969) + "       ns|" + iBinarySearch(a100s, 6969)   + "       ns| "+ iBinarySearch(a1000000s, 6969) +"ns|");
 		System.out.println("---------------------------------------------------------");
 		long startTime = System.nanoTime();
 		rBinarySearch(a10s,0, a10s.length-1, 6969);
@@ -57,9 +57,9 @@ public class Lab5 {
 		System.out.println("Binary Rec   |" + elapsedTime + "          ns|" + elapsedTime2   + "       ns| "+ elapsedTime3 +"         ns|");
 		
 		System.out.println("Average Sort Times: ");
-		System.out.println("             | 10           | 100             | 10 000   ");
+		System.out.println("             | 10           | 100          | 10 000   ");
 		System.out.println("---------------------------------------------------------");
-		System.out.println("Insertion It   |" + iInsertionSort(a10u) + "ns|" + iInsertionSort(a100u)   + "ns| "+ iInsertionSort(a10000u) +"ns|");
+		System.out.println("Insertion It |        " + iInsertionSort(a10u) + "ns|        " + iInsertionSort(a100u)   + "ns|      "+ iInsertionSort(a10000u) +"ns|");
 		 startTime = System.nanoTime();
 		rInsertionSort(a10u, a10u.length-1);
 		elapsedTime = System.nanoTime()-startTime;
@@ -69,8 +69,8 @@ public class Lab5 {
 		startTime3 = System.nanoTime();
 		rInsertionSort(a10000u, a10000u.length-1);
 		elapsedTime3 = System.nanoTime()-startTime3;
-		System.out.println("Insertion Rc   |" + elapsedTime + "ns|" + elapsedTime2 + "ns| "+ elapsedTime3 +"ns|");
-		System.out.println("Selection It   |" + iSelectionSort(a10u) + "ns|" + iSelectionSort(a100u)   + "ns| "+ iSelectionSort(a10000u) +"ns|");
+		System.out.println("Insertion Rc |        " + elapsedTime + "ns|       " + elapsedTime2 + "ns|        "+ elapsedTime3 +"ns|");
+		System.out.println("Selection It |        " + iSelectionSort(a10u) + "ns|       " + iSelectionSort(a100u)   + "ns|     "+ iSelectionSort(a10000u) +"ns|");
 		startTime = System.nanoTime();
 		rInsertionSort(a10u, a10u.length-1);
 		elapsedTime = System.nanoTime()-startTime;
@@ -80,7 +80,7 @@ public class Lab5 {
 		startTime3 = System.nanoTime();
 		rInsertionSort(a10000u, a10000u.length-1);
 		elapsedTime3 = System.nanoTime()-startTime3;
-		System.out.println("Selection Rc   |" + elapsedTime + "ns|" + elapsedTime2   + "ns| "+ elapsedTime3 +"ns|");
+		System.out.println("Selection Rc |          " + elapsedTime + "ns|      " + elapsedTime2   + "ns|       "+ elapsedTime3 +"ns|");
 		startTime = System.nanoTime();
 		mergeSort(a10u, a10u.length-1);
 		elapsedTime = System.nanoTime()-startTime;
@@ -90,7 +90,7 @@ public class Lab5 {
 		startTime3 = System.nanoTime();
 		mergeSort(a10000u, a10000u.length-1);
 		elapsedTime3 = System.nanoTime()-startTime3;
-		System.out.println("Merge Rc   |" + elapsedTime + "ns|" + elapsedTime2   + "ns| "+ elapsedTime3 +"ns|");
+		System.out.println("   Merge Rc  |       " + elapsedTime + "ns|        " + elapsedTime2   + "ns|          "+ elapsedTime3 +"ns|");
 	}//main
 	
 	public static long linearSearch(int[] query) {
