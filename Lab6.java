@@ -4,14 +4,14 @@ import java.io.FileReader;
 import ptolemy.plot.*;
 public class Lab6 {
 
-	 public static final double Xmin = 0;
-	  public static final double Xmax = 300; // Graph domain
+	 public static final double Xmin = 1995;
+	  public static final double Xmax = 2020; // Graph domain
 	  public static final int Npoint = 500;
 	  public static void main ( String [] args ) {
 	    Plot plotObj = new Plot () ; // Create Plot object
-	    plotObj.setTitle("Rainfall vs Month") ;
-	    plotObj.setXLabel("Month") ;
-	    plotObj.setYLabel ("Rainfall");
+	    plotObj.setTitle("Precipitation vs Year") ;
+	    plotObj.setXLabel("Year") ;
+	    plotObj.setYLabel ("Precipitation(mm)");
 	    // plotObj.setSize (400 , 300) ;
 	    // plotObj.setXRange ( Xmin , Xmax ) ;
 	    // plotObj.addPoint ( int Set , double x , double y , boolean connect );
@@ -19,7 +19,17 @@ public class Lab6 {
 	    // Plotting loop
 	    
 	    PlotApplication app = new PlotApplication ( plotObj ) ; // Display
-	    String[] Rainy = readFile("Rain.txt");
+	    String[] Rainy = readFile("Precip1.txt");
+	    String[] Rainy1 = readFile("Precip2.txt");
+	    double[] rainData = new double[Rainy.length];
+	    double[] rainData1 = new double[Rainy1.length];
+	    for(int i = 0; i < Rainy.length; i++) {
+	    	rainData[i] = Double.parseDouble(Rainy[i]);
+	    }
+	    
+	    for(int i = 0; i < Rainy1.length; i++) {
+	    	rainData1[i] = Double.parseDouble(Rainy1[i]);
+	    }
 	    
 	    for (double x = Xmin; x <= Xmax; x += xStep) {
 	      double y = Math.sin( x ) * Math.sin ( x ) ;
@@ -51,16 +61,9 @@ public class Lab6 {
 		            
 		            while (i < length) {
 		            	String C = in.readLine();
-		            	if(i > 1 && i < contents.length-1) {		            		
-		            		
-		            		if(C.equals("N") || C.equals("S") || C.equals("E") || C.equals("W")) {
-		            			contents[i] = C;
-		            			
-		            		} else {
-		            			System.out.println("InVaLiD dAtA");
-		            			System.exit(0);
-		            		}
-		            	}		        
+		            	if(C.equals("")) {
+		            		continue;		            	
+		            	}
 		            	contents[i] = C;
 		              i++;
 		            }//while 
