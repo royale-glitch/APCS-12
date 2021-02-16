@@ -19,17 +19,6 @@ public class Lab6 {
 	    // Plotting loop
 	    
 	    PlotApplication app = new PlotApplication ( plotObj ) ; // Display
-	    String[] Rainy = readFile("Precip1.txt");
-	    String[] Rainy1 = readFile("Precip2.txt");
-	    double[] rainData = new double[Rainy.length];
-	    double[] rainData1 = new double[Rainy1.length];
-	    for(int i = 0; i < Rainy.length; i++) {
-	    	rainData[i] = Double.parseDouble(Rainy[i]);
-	    }
-	    
-	    for(int i = 0; i < Rainy1.length; i++) {
-	    	rainData1[i] = Double.parseDouble(Rainy1[i]);
-	    }
 	    
 	    for (double x = Xmin; x <= Xmax; x += xStep) {
 	      double y = Math.sin( x ) * Math.sin ( x ) ;
@@ -37,44 +26,12 @@ public class Lab6 {
 	    }
 	  }//main
 	  
-	  public static String[] readFile(String fileName) {
-			 String[] contents = null;
+	  public static String[] readFile(String year) {
 			 
-			int length = 0;
-
-		        try {
-
-		            // input
-		            BufferedReader in = new BufferedReader(new FileReader(fileName));
-		            in.mark(Short.MAX_VALUE);  // see api
-
-		            // count number of lines in file
-		            while (in.readLine() != null) {
-		            	length++;
-		            }
-		            	contents = new String[length];
-		            	
-		            in.reset(); // rewind the reader to the start of file
-		            	
-		            // read in contents of file and print to screen
-		            int i = 0;
-		            
-		            while (i < length) {
-		            	String C = in.readLine();
-		            	if(C.equals("")) {
-		            		continue;		            	
-		            	}
-		            	contents[i] = C;
-		              i++;
-		            }//while 
-		            
-		            in.close();
-		        } catch (Exception e) {
-		            System.out.println("File Input Error");
-		            System.exit(0);
-		        }
+			 BufferedReader in = new BufferedReader(new FileReader("src/weather/" + year + ".txt"));
+             String[] lines = in.lines().toArray(String[]::new);
 		        
-		        return contents;
+		        return lines;
 		}//readFile
 
 }//Lab6
