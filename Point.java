@@ -1,120 +1,57 @@
+
 public class Point {
-	private int x;
-	private int y;
+	private int year;
+	private int month;
+	private int day;
+	private double precip;
 	
 	Point(){
-		x = 0;
-		y = 0;
+		year = 0;
+		month = 0;
+		day = 0;
+		precip = 0;
 	}
 	
-	public Point(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public Point(int year, int month, int day, double precipitation) {
+		this.year = year;
+		this.month = month;
+		this.day = day;
+		this.precip = precipitation;		
 	}
 	
-	public int getX() {
-		return x;
+	public int getYear() {
+		return this.year;
 	}
 	
-	public int getY() {
-		return y;
+	public int getMonth() {
+		return this.month;
 	}
 	
-	public void setX(int x) {
-		this.x = x;
+	public int getDay() {
+		return this.day;
 	}
 	
-	public void setY(int y) {
-		this.y = y;
+	public double getPrecip() {
+		return this.precip;
 	}
 	
-	static void init(int[][] Board, Point p) {
-		for(int i = 0; i < Board.length; i++) {
-			for(int j = 0; j < Board[i].length; j++) {
-				Board[i][j] = 0;
-			}
-		}
-		Board[p.getX()][p.getY()] = 1;
-	}//init
+	public void setYear(int year) {
+		this.year = year;
+	}
 	
-	static int sum(int[][] Board) {
-		int total = 0;
-		for(int[] i : Board) {
-			for(int j : i) {
-				total += j;
-			}
-		}
-		return total;
-	}//Board
+	public void setMonth(int month) {
+		this.month = month;
+	}
 	
-	static boolean West(int[][] board, Point p) {
-		
-		try {
-				p.setY(p.getY()-1);
-			if(board[p.getX()][p.getY()] == 0) {
-				board[p.getX()][p.getY()] = 1;
-			} else {
-				board[p.getX()][p.getY()] *= 2;
-			}
-		} catch (Exception e) {
-			System.out.println("iNvaLiD dAtA");
-			System.exit(0);
-			return false;
-		}
-		
-		return true;
-	}//North
+	public void setDay(int day) {
+		this.day = day;
+	}
 	
-	static boolean East(int[][] board, Point p) {
-		
-		try {
-				p.setY(p.getY()+1);
-			if(board[p.getX()][p.getY()] == 0) {
-				board[p.getX()][p.getY()] = 1;
-			} else {
-				board[p.getX()][p.getY()] *= 2;
-			}
-		} catch (Exception e) {
-			System.out.println("iNvaLiD dAtA");
-			System.exit(0);
-			return false;
-		}
-		
-		return true;
-	}//South
+	public void setPrecip(double precip) {
+		this.precip = precip;
+	}
 	
-	static boolean South(int[][] board, Point p) {
-		
-		try {
-				p.setX(p.getX()+1);
-			if(board[p.getX()][p.getY()] == 0) {
-				board[p.getX()][p.getY()] = 1;
-			} else {
-				board[p.getX()][p.getY()] *= 2;
-			}
-		} catch (Exception e) {
-			System.out.println("iNvaLiD dAtA");
-			System.exit(0);
-			return false;
-		}
-		
-		return true;
-	}//West
 	
-	static boolean North(int[][] board, Point p) {
-		try {
-				p.setX(p.getX()-1);
-			if(board[p.getX()][p.getY()] == 0) {
-				board[p.getX()][p.getY()] = 1;
-			} else {
-				board[p.getX()][p.getY()] *= 2;
-			}
-		} catch (Exception e) {
-			System.out.println("iNvaLiD dAtA");
-			System.exit(0);
-			return false;
-		}
-		return true;
-	}//East
+	
 	
 }//Point
