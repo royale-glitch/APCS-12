@@ -1,4 +1,3 @@
-
 public class Point {
 	private int year;
 	private int month;
@@ -51,6 +50,9 @@ public class Point {
 		this.precip = precip;
 	}
 	
+	public String toString() {
+		return this.year + "/" + this.month +  "/" + this.day + ": Precipitation: " + this.precip;
+	}
 	
 	
 	
