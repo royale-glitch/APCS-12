@@ -7,13 +7,15 @@
 
 import java.text.NumberFormat;
 
-public class Account{
+public class Account implements Lockable{
    private NumberFormat fmt = NumberFormat.getCurrencyInstance();
    private final double RATE = 0.035;  // interest rate of 3.5%
 
    private long acctNumber;
    private double balance;
    private String name;
+   private int key;
+   private boolean isLocked;
 
    //-----------------------------------------------------------------
    //  Sets up the account by defining its owner, account number,
@@ -23,7 +25,8 @@ public class Account{
       name = owner;
       acctNumber = account;
       balance = initial;
-   }
+      isLocked = false;
+   }//Account
 
    //-----------------------------------------------------------------
    //  Sets up the account by defining its owner and account number.
@@ -33,7 +36,8 @@ public class Account{
      name = owner;
 	 acctNumber = account;  
 	 balance = 0;
-   }
+	 isLocked = false;
+   }//Account
    
    //-----------------------------------------------------------------
    //  Deposits the specified amount into the account. Returns the
@@ -46,11 +50,11 @@ public class Account{
           System.out.println ("Error: Deposit amount is invalid.");
           System.out.println (acctNumber + "  " + fmt.format(amount));
        }
-       else
+       else {
           balance = balance + amount;
-
+       }
        return balance;
-   }
+   }//deposit
 
    //-----------------------------------------------------------------
    //  Withdraws the specified amount from the account and applies
@@ -76,7 +80,7 @@ public class Account{
 			balance -= amount;
 			}
 		return balance;
-   }
+   }//withdraw
 
    //-----------------------------------------------------------------
    //  Adds interest to the account and returns the new balance.
@@ -84,14 +88,14 @@ public class Account{
    public double addInterest () {
       balance += (balance * RATE);
       return balance;
-   }
+   }//addInterest
 
    //-----------------------------------------------------------------
    //  Returns the current balance of the account.
    //-----------------------------------------------------------------
    public double getBalance () {
       return balance;
-   }
+   }//getBalance
 
    //-----------------------------------------------------------------
    //  Validates the transaction.  If sufficent funds exist, withdraws the specified amount
@@ -100,8 +104,8 @@ public class Account{
    //-----------------------------------------------------------------
    public static boolean transfer (double amount, double fee, Account from, Account to){
 	   if(from.getBalance() >= amount) {
-		   to.deposit(amount);
 		   from.withdraw(amount, fee);
+		   to.deposit(amount);
 		   return true;
 	   }else {
 		   return false;
@@ -115,8 +119,8 @@ public class Account{
 
    public boolean transfer (double amount, Account to){
       if(this.getBalance() >= amount) {
-    	  to.deposit(amount);
     	  this.withdraw(amount, 0);
+    	  to.deposit(amount);    	  
     	  return true;
       } else {
     	  return false;
@@ -129,7 +133,7 @@ public class Account{
 	//-----------------------------------------------------------------
 	public long getAccountNumber () {
 		return acctNumber;
-	}
+	}//getAccountNumber
    //-----------------------------------------------------------------
    //  Returns a one-line description of the account as a string.
    //-----------------------------------------------------------------
@@ -137,5 +141,39 @@ public class Account{
       NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
       return (acctNumber + "\t" + name + "\t" + fmt.format(balance));
-   }
-}
+   }//toString
+
+   @Override
+	public void setKey(int key) {
+		this.key = key;
+		
+	}//setKey
+	
+   @Override
+	public void lock(int key) {
+		if(this.key != key) {
+			return;
+		} else {
+			
+			
+			this.isLocked = true;
+		}
+		
+	}//lock
+	
+   @Override
+	public void unlock(int key) {
+	   if(this.key != key) {
+			return;
+		} else {
+			
+			
+			this.isLocked = false;
+		}
+		
+	}//unlock
+   @Override
+	public boolean locked() {
+		return this.isLocked;
+	}//locked
+}//Account
