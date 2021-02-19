@@ -19,8 +19,7 @@ public class Account{
    //  Sets up the account by defining its owner, account number,
    //  and initial balance.
    //-----------------------------------------------------------------
-   public Account (String owner, long account, double initial)
-   {
+   public Account (String owner, long account, double initial){
       name = owner;
       acctNumber = account;
       balance = initial;
@@ -40,8 +39,7 @@ public class Account{
    //  Deposits the specified amount into the account. Returns the
    //  new balance.
    //-----------------------------------------------------------------
-   public double deposit (double amount)
-   {
+   public double deposit (double amount) {
        if (amount < 0)  // deposit value is negative
        {
           System.out.println ();
@@ -58,8 +56,7 @@ public class Account{
    //  Withdraws the specified amount from the account and applies
    //  the fee. Returns the new balance.
    //-----------------------------------------------------------------
-   public double withdraw (double amount, double fee)
-   {
+   public double withdraw (double amount, double fee) {
       amount += fee;
 
 		if (amount < 0){
@@ -76,7 +73,7 @@ public class Account{
 			System.out.println ("Requested: " + fmt.format(amount));
 			System.out.println ("Available: " + fmt.format(balance));
 			}else {
-			balance = balance - amount;
+			balance -= amount;
 			}
 		return balance;
    }
@@ -102,9 +99,14 @@ public class Account{
    //  else does nothing and returns false.
    //-----------------------------------------------------------------
    public static boolean transfer (double amount, double fee, Account from, Account to){
-
-      return true;
-   }
+	   if(from.getBalance() >= amount) {
+		   to.deposit(amount);
+		   from.withdraw(amount, fee);
+		   return true;
+	   }else {
+		   return false;
+	   }
+   }//transfer
     //-----------------------------------------------------------------
    //  Validates the transaction.  If sufficent funds exist, withdraws the specified amount
    //  from this account and deposits it to the "to" account returning true,
@@ -112,10 +114,15 @@ public class Account{
    //-----------------------------------------------------------------
 
    public boolean transfer (double amount, Account to){
-      
-	   
-	   return true;
-   } 
+      if(this.getBalance() >= amount) {
+    	  to.deposit(amount);
+    	  this.withdraw(amount, 0);
+    	  return true;
+      } else {
+    	  return false;
+      }
+
+   } //transfer
 
 	//-----------------------------------------------------------------
 	//  Returns the account number.
