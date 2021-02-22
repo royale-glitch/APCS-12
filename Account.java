@@ -44,7 +44,10 @@ public class Account implements Lockable{
    //  new balance.
    //-----------------------------------------------------------------
    public double deposit (double amount) {
-       if (amount < 0)  // deposit value is negative
+	   if(this.isLocked) {
+    	   return balance;
+       }
+	   if (amount < 0)  // deposit value is negative
        {
           System.out.println ();
           System.out.println ("Error: Deposit amount is invalid.");
@@ -61,7 +64,10 @@ public class Account implements Lockable{
    //  the fee. Returns the new balance.
    //-----------------------------------------------------------------
    public double withdraw (double amount, double fee) {
-      amount += fee;
+	   if(this.isLocked) {
+    	   return balance;
+       }
+	   amount += fee;
 
 		if (amount < 0){
 			System.out.println ();
@@ -86,7 +92,10 @@ public class Account implements Lockable{
    //  Adds interest to the account and returns the new balance.
    //-----------------------------------------------------------------
    public double addInterest () {
-      balance += (balance * RATE);
+	   if(this.isLocked) {
+    	   return balance;
+       }
+	   balance += (balance * RATE);
       return balance;
    }//addInterest
 
@@ -103,6 +112,9 @@ public class Account implements Lockable{
    //  else does nothing and returns false.
    //-----------------------------------------------------------------
    public static boolean transfer (double amount, double fee, Account from, Account to){
+	   if(from.isLocked || to.isLocked) {
+    	   return false;
+       }
 	   if(from.getBalance() >= amount) {
 		   from.withdraw(amount, fee);
 		   to.deposit(amount);
@@ -118,7 +130,11 @@ public class Account implements Lockable{
    //-----------------------------------------------------------------
 
    public boolean transfer (double amount, Account to){
-      if(this.getBalance() >= amount) {
+       if(this.isLocked || to.isLocked) {
+    	   return false;
+       }
+	   
+	   if(this.getBalance() >= amount) {
     	  this.withdraw(amount, 0);
     	  to.deposit(amount);    	  
     	  return true;
@@ -153,9 +169,7 @@ public class Account implements Lockable{
 	public void lock(int key) {
 		if(this.key != key) {
 			return;
-		} else {
-			
-			
+		} else {			
 			this.isLocked = true;
 		}
 		
@@ -165,9 +179,7 @@ public class Account implements Lockable{
 	public void unlock(int key) {
 	   if(this.key != key) {
 			return;
-		} else {
-			
-			
+		} else {			
 			this.isLocked = false;
 		}
 		
