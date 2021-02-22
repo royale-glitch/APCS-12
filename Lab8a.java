@@ -1,39 +1,56 @@
 public class Lab8a {
+	 //-----------------------------------------------------------------
+	   //  Creates some bank accounts and requests various services.
+	   //-----------------------------------------------------------------
+	   public static void main (String[] args) {
+		   Account acct1 = new Account ("Ted Murphy", 72354, 102.56);
+		   Account acct2 = new Account ("Anita Gomez", 69713, 40.00);
+		   Account acct3 = new Account ("Sanchit Red", 93757, 759.32);
+		   Account acct4 = new Account("Fred Smith", 12345, 200.00);
 
-	public static void main(String[] args) {
-		Account acct1 = new Account ("Ted Murphy", 12345, 214.56);
-	    Account acct2 = new Account ("Anita Gomez", 54321, 20.00);
-	    Account acct3 = new Account ("Surya Narayan", 42069); 
+		   System.out.println (acct1);
+		   System.out.println (acct2);
+		   System.out.println (acct3);
+		   System.out.println (acct4);
+		    
+		   System.out.println("\n---------Lock Account 1 and Try to Withdraw/Transfer/Deposit/AddInterest (/4) --------\n");
+		   acct1.setKey(123);
+		   acct1.lock(123);
+		   System.out.println ("Withdraw $100: " + acct1.withdraw(100, 0));
+		   System.out.println ("Transfer $100: " + acct4.transfer(100, acct1));
+		   System.out.println ("Deposit $100: " + acct1.deposit(100));
+		   System.out.println ("Add Interest: " + acct1.addInterest());
+	       System.out.println("\n---------Unlock Account 1 and Try to Withdraw/Transfer/Deposit/AddInterest (/4) --------\n");
+           acct1.unlock(123);
+		   System.out.println ("Withdraw $100: " + acct1.withdraw(100, 0));
+		   System.out.println ("Transfer $100: " + acct4.transfer(100, acct1));
+		   System.out.println ("Deposit $100: " + acct1.deposit(100));
+		   System.out.println ("Add Interest: " + acct1.addInterest());
 
-	      System.out.println ("Murphy balance after deposit: $" + acct1.deposit (14.58));
-	      System.out.println ("Gomez balance after deposit: $" + acct2.deposit (300.00));
-	      System.out.println("Narayan balance after deposit: $" + acct3.deposit (666.00));
-	      System.out.println ("Gomez balance after withdrawal: $" + acct2.withdraw (100.00, 2.00));
 
-		  System.out.print("\nWithdraw $800 from Gomez account: ");
-	      acct2.withdraw (800.00, 0.0);  // exceeds balance
-	      acct3.withdraw(420, 1);
-	      
-	      acct1.addInterest();
-	      acct2.addInterest();
-	      acct3.addInterest();
-	     
-	      System.out.println ("\nAccount Balances:");
-	      System.out.println (acct1);
-	      System.out.println (acct2);
-	      System.out.println(acct3);
-	     
+		   System.out.println("\n---------Lock Account 2 and Withdraw If Locked  (/3)--------\n");
+		   acct2.setKey(15);
+		      if (acct2.locked()) {
+		        System.out.println("1. Locked is not working");
+		      } else {
+		        System.out.println("1. Locked is working");
+		      }
+		      acct2.lock(15);
+		      if (acct2.locked()) {
+		        System.out.println("2. Locked is working");
+		      } else {
+		        System.out.println("2. Locked is not working");
+		      }
 
-	      // transfer $50 from account 1 to account 2
-		  System.out.println ("\nTransfer $50 from Murphy to Gomez:");
-	      acct1.transfer(50, acct2);
-	      Account.transfer(180, 2, acct1, acct2);
-	      acct2.transfer(80, acct3);
+		      acct2.unlock(15);
+		      if (acct2.locked()) {
+		        System.out.println("3. Locked is not working");
+		      } else {
+		        System.out.println("3. Locked is working");
+		      }
+		      
+		      System.out.println("\n-------------------------------------------------------\n");
 
-	      System.out.println (acct1);
-	      System.out.println (acct2);
-	      System.out.println (acct3);
+	   }//main
 
-	}
-
-}
+}//Lab8a
