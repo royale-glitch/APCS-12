@@ -19,14 +19,24 @@ public class Lab6{
 	    for(int i = 0; i <= 25; i++) {
 		    	String[] temp = readFile("src/weather/" + (i+1995) + ".csv");    	
 		    	String[] temp1 = readFile("src/weather2/" + (i+1995) + ".csv");
+		    	//iterates through each line of the file
 		    	for(int j = 0; j < temp.length; j++) {
-		    		String[]temp2 = temp[i].split("\",\"");
-		    		String[] temp3 = temp1[i].split("\",\"");
-		    		if(j == 0 || (temp2[23] == null && temp3[23] == null) || (temp2[23] == "" && temp3[23] == "")) {
+		    		//splits each line of the file into an array at ","
+		    		String[]temp2 = temp[j].split("\",\"");
+		    		temp2[23] = temp2[23].trim();
+		    		String[] temp3 = temp1[j].split("\",\"");
+		    		temp3[23] = temp3[23].trim();
+		    		System.out.println("temp2: " +temp2[23] + "temp3:  "+ temp3[23]);
+		    		//skips the first line of each file and skips any null/empty values
+		    		if(j == 0 || (temp2[23] == null || temp3[23] == null) || (temp2[23] == "" || temp3[23] == "")) {
 		    			continue;
 		    		}	    			
-		    		System.out.println("r");	
+		    		// 23 is precipitation
+		    		try {
 		    		average = (Double.parseDouble(temp2[23]) + Double.parseDouble(temp3[23]))/2;
+		    		}catch(Exception e) {
+		    			average = 0;
+		    		}
 		    		data.add(average);		    		
 		    }
 	    } 	
