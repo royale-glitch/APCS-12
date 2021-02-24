@@ -40,7 +40,7 @@ public class GroceryItem {
 	}
 	
 	public String toString() {
-		return "Name of item: " + this.getItem() + "\nPrice of item: " + this.getCost() + "\nWeight of item: " + this.getWeight();
+		return "Name of item: " + this.getItem() + " Price of item: " + this.getCost() + " Weight of item: " + this.getWeight();
 	}
 		
 }//GroceryItem
