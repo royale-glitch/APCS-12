@@ -19,29 +19,30 @@ public class Lab7 {
 	          };
 		
 	public static void main(String[] args) {
+		//sorts the array of the list of items based on $/kg
 		Arrays.sort(groceryItems);
-		
+		@SuppressWarnings("unused")
 		ArrayList<GroceryItem> bag = new ArrayList<GroceryItem>();
-		greedyI(bag);
+		//greedyI(bag);
 		
-		//skeleton code
-		ArrayList<GroceryItem> temp = new ArrayList<GroceryItem>();
+		
+		//creating a fullBag with 2 of each item
+		ArrayList<GroceryItem> FULL = new ArrayList<GroceryItem>();
 		for(GroceryItem g : groceryItems){
 			for(int i = 0; i < 2; i++){
-				temp.add(g);
+				FULL.add(g);
 			}
 		}
+		
         long startTime = System.nanoTime();
-        ArrayList<GroceryItem> perfectBag = bestBag(temp);
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println("Time: " + duration/1000 + " ms");
+        ArrayList<GroceryItem> perfectBag = bestBag(FULL);
+        long duration = (System.nanoTime() - startTime);
+        System.out.println("Time: " + duration + " ns");
         System.out.println("# method calls = " + counter);
         System.out.println("# items = " + perfectBag.size());
         System.out.println("weight items = " + bagWeight(perfectBag) + " kg.");
         System.out.println("cost items = $" + bagCost(perfectBag));
         printBag(perfectBag);
-        
 			
 	}//main
 	
@@ -50,12 +51,8 @@ public class Lab7 {
 	public static void greedyI(ArrayList<GroceryItem> bag) {
 		double totalPrice = 0;
 		double totalMass = 0;		
-		//checks if items can be added to the bag if the mass is below the maximum or 2 of each item in the store have been added 
+		//checks if items can be added to the bag if the mass is below the maximum OR 2 of each item in the store have been added 
 			for(int i = 0; i < groceryItems.length; i++) {
-				//if the limit has been reached, terminate the loop
-				if(totalMass >= LIMIT) {
-					break;
-				} //else
 				 if(groceryItems[i].getCount() < 2 && totalMass + groceryItems[i].getWeight() < 8.5) {
 					bag.add(groceryItems[i]);
 					totalMass += groceryItems[i].getWeight();
@@ -70,24 +67,19 @@ public class Lab7 {
 		System.out.println("Price of ideal bag: $" + totalPrice);
 		System.out.println("Mass of ideal bag: " + totalMass + " kg");
 		System.out.println("Size of ideal bag: " + bag.size() + " items");
+		System.out.println("---------------------------");
 		
 	}//greedyI
 	
 		//recursive algorithm
-	    @SuppressWarnings("unused")
-		private static ArrayList<GroceryItem> bestBag(ArrayList<GroceryItem> b) {
-	        
-	    	
-	    	
-	        // counts recursive calls
-	        counter++;
-	        if(counter % 10000000 == 0) {
-	            System.out.println("# method calls : " + counter);
-	            return b;
-	        } else {
-	        	return bestBag(b);
-	        }
-	      
+		private static ArrayList<GroceryItem> bestBag(ArrayList<GroceryItem> b) {        
+			counter++;
+			if(bagWeight(b) <= 8.5) {   		
+				return b;
+	    	} else {
+	    		b.remove(b.size()-1);
+	    		return bestBag(b);
+	    	}
 	    } // bestBag
 
 	    // returns the weight of bag b
