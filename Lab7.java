@@ -4,6 +4,8 @@ import java.util.*;
  * Author: Surya Narayan
  * Lab 7: Grocery Problem
  * Iterative and Recursive solutions
+ * Time complexity of Iterative: O(n)
+ * Time complexity of Recursive: O(n)
  */
 public class Lab7 {
 		static int counter = 0;
@@ -21,9 +23,8 @@ public class Lab7 {
 	public static void main(String[] args) {
 		//sorts the array of the list of items based on $/kg
 		Arrays.sort(groceryItems);
-		@SuppressWarnings("unused")
 		ArrayList<GroceryItem> bag = new ArrayList<GroceryItem>();
-		//greedyI(bag);
+		greedyI(bag);
 		
 		
 		//creating a fullBag with 2 of each item
@@ -33,24 +34,29 @@ public class Lab7 {
 				FULL.add(g);
 			}
 		}
-		
+		//Starts the timer
         long startTime = System.nanoTime();
         ArrayList<GroceryItem> perfectBag = bestBag(FULL);
         long duration = (System.nanoTime() - startTime);
-        System.out.println("Time: " + duration + " ns");
-        System.out.println("# method calls = " + counter);
-        System.out.println("# items = " + perfectBag.size());
-        System.out.println("weight items = " + bagWeight(perfectBag) + " kg.");
-        System.out.println("cost items = $" + bagCost(perfectBag));
-        printBag(perfectBag);
+        System.out.println("Time: " + duration + " nanoseconds");
+        System.out.println("# method calls: " + counter);
+        System.out.println("Price of ideal bag: $" + bagCost(perfectBag));
+        System.out.println("Mass of ideal bag: " + bagWeight(perfectBag) + " kg");
+        System.out.println("Size of ideal bag: " + perfectBag.size() + " items");       
+		//printBag(perfectBag);
+		
+		System.out.println("---------------------------");
+        //printBag(perfectBag);
 			
 	}//main
 	
 	
 	//Greedy Algorithm
 	public static void greedyI(ArrayList<GroceryItem> bag) {
+		counter++;
 		double totalPrice = 0;
-		double totalMass = 0;		
+		double totalMass = 0;	
+		long startTime = System.nanoTime();
 		//checks if items can be added to the bag if the mass is below the maximum OR 2 of each item in the store have been added 
 			for(int i = 0; i < groceryItems.length; i++) {
 				 if(groceryItems[i].getCount() < 2 && totalMass + groceryItems[i].getWeight() < 8.5) {
@@ -63,15 +69,17 @@ public class Lab7 {
 		for(GroceryItem g : bag) {
 			totalPrice += g.getCost();
 		}
-		
+		long duration = System.nanoTime()-startTime;
+		System.out.println("Time: " + duration + " nanoseconds");
+        System.out.println("# method calls: " + counter);
 		System.out.println("Price of ideal bag: $" + totalPrice);
 		System.out.println("Mass of ideal bag: " + totalMass + " kg");
 		System.out.println("Size of ideal bag: " + bag.size() + " items");
 		System.out.println("---------------------------");
-		
+		counter = 0;
 	}//greedyI
 	
-		//recursive algorithm
+		//Recursive "reverse" Greedy algorithm
 		private static ArrayList<GroceryItem> bestBag(ArrayList<GroceryItem> b) {        
 			counter++;
 			if(bagWeight(b) <= 8.5) {   		
@@ -83,7 +91,7 @@ public class Lab7 {
 	    } // bestBag
 
 	    // returns the weight of bag b
-	    public static double bagWeight(ArrayList<GroceryItem>b) {
+	    public static double bagWeight(ArrayList<GroceryItem> b) {
 	    	double totalMass = 0;	    	
 	    	for(GroceryItem g : b) {
 	    		totalMass += g.getWeight();
@@ -91,8 +99,8 @@ public class Lab7 {
 	    	return totalMass;
 	    }//bagWeight
 
-	    // returns the value of bag b
-	    public static double bagCost(ArrayList<GroceryItem>b) {
+	    // returns the cost of bag b
+	    public static double bagCost(ArrayList<GroceryItem> b) {
 	    	double totalCost = 0;	    	
 	    	for(GroceryItem g : b) {
 	    		totalCost += g.getCost();
@@ -112,7 +120,7 @@ public class Lab7 {
 	    }//bagCount
 
 	    // prints contents of bag b
-	    public static void printBag(ArrayList<GroceryItem>  b) {
+	    public static void printBag(ArrayList<GroceryItem> b) {
 	    	for(GroceryItem g : b) {
 	    		System.out.println(g);
 	    	}
