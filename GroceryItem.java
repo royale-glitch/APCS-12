@@ -53,7 +53,7 @@ public class GroceryItem implements Comparable<GroceryItem>{
 	public int compareTo(GroceryItem g) {
 		if(g.ppkg > this.ppkg) {
 			return 1;
-		} else if(this.ppkg == g.ppkg) {
+		} else if(g.ppkg == this.ppkg) {
 			return 0;
 		} else {return -1;}
 	}
