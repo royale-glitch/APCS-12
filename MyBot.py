@@ -21,7 +21,7 @@ robotName = "Surya"
 
 def play(botSocket, srvConf):
     gameNumber = 0  # The last game number bot got from the server (0 == no game has been started)
-
+    enemyFound = False
     while True:
         try:
             # Get information to determine if bot is alive (health > 0) and if a new game has started.
@@ -45,7 +45,7 @@ def play(botSocket, srvConf):
             currentMode = "scan"
 
             # lighthouse will scan the area in this many slices (think pizza slices with this bot in the middle)
-            scanSlices = 24
+            scanSlices = 32
 
             # This is the radians of where the next scan will be
             nextScanSlice = 0
@@ -67,22 +67,18 @@ def play(botSocket, srvConf):
                 scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
                 scanReply = botSocket.sendRecvMessage(
                     {'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
-
+                
                 # if we found an enemy robot with our scan
                 if scanReply['distance'] != 0:
+                    enemyFound = True
                     # fire down the center of the slice we just scanned.
                     fireDirection = scanRadStart + scanSliceWidth / 2
-                    botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
+                    botSocket.sendRecvMessage(
+                        {'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
                     # make sure don't try and shoot again until this shell has exploded.
-                    isCanon = botSocket.sendRecvMessage({'type' : 'getCanonRequest'})
-                    if isCanon['shellInProgress'] == False and scanReply['distance'] != 0:
-                        botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
-                        currentMode = "scan"
-                    else:
-                        currentMode = "wait"
-                    scanRadStart = -nextScanSlice * scanSliceWidth
-                    scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
-                nextScanSlice += 1
+                    currentMode = "wait"
+                else: enemyFound = False
+                if not enemyFound: nextScanSlice += 1
                 if nextScanSlice == scanSlices:
                     nextScanSlice = 0
 
@@ -92,66 +88,10 @@ def play(botSocket, srvConf):
             # continue until the next game starts.
             log(str(e), "WARNING")
             continue
-        try:
-            # get speed, direction, location data from server
-            xMin = (math.pi/2+random.random()*math.pi)-math.pi 
-            xR = xMin if xMin > 0 else 3*math.pi/2+random.random()*math.pi/2
-            getSpeedReply = botSocket.sendRecvMessage({'type': 'getSpeedRequest'})            
-            # if our requested speed is 0 then it's the start of the game or we hit something.
-            # note, we will stop when we hit a wall or another bot. 'currentSpeed' and 'requestedSpeed'
-            # will be reset to 0
-            if getSpeedReply['requestedSpeed'] == 0:
-                # pick a new random direction (hopefully away from what we just hit).
-                # random.random() returns value between 0 and 1.
-                # 2*math.pi is a full circle in radians.
-                radians = random.random() * 2 * math.pi
 
-                # Turn in a new direction
-                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection': radians})
-                # Request we start accelerating to 50% speed
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 50})
-                
-                # log some useful information.
-                degrees = str(int(round(math.degrees(radians))))
-                log("Requested to go " + degrees + " degrees at 50% speed.", "INFO")
-                """
-                   pi/2
-                pi       0
-                   3pi/2
-                """
-            getLocationReply = botSocket.sendRecvMessage({'type' : 'getLocationRequest'})
-            x = getLocationReply['x']
-            y = getLocationReply['y']
-            if x <= 200:
-                #stop and turn from 3pi/2 to pi/2
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 0})
-                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection' : xR})
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 50})
-            if y <= 200:
-                #stop and turn from pi to 0
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 0})
-                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection' : math.pi+random.random()*math.pi})
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 50})
-            if x >= 800:
-                #stop and turn from pi/2 to 3pi/2
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 0})
-                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection' : math.pi/2+random.random()*math.pi})
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 50})
-            if y >= 800:
-                #stop and turn from 0 to pi
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 0})
-                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection' : random.random()*math.pi})
-                botSocket.sendRecvMessage({'type' : 'setSpeedRequest', 'requestedSpeed' : 50})
-
-        except nbipc.NetBotSocketException as e:
-            # Consider this a warning here. It may simply be that a request returned
-            # an Error reply because our health == 0 since we last checked. We can
-            # continue until the next game starts.
-            log(str(e), "WARNING")
-            continue
-    ##################################################################
-    # Standard stuff below.
-    ##################################################################
+##################################################################
+# Standard stuff below.
+##################################################################
 
 
 def quit(signal=None, frame=None):
