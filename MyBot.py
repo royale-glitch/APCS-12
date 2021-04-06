@@ -40,6 +40,9 @@ def play(botSocket, srvConf):
             # A new game has started. Record new gameNumber and reset any variables back to their initial state
             gameNumber = getInfoReply['gameNumber']
             log("Game " + str(gameNumber) + " has started. Points so far = " + str(getInfoReply['points']))
+            
+            # The distance to the closest bot in each quadrant is stored in this list.
+            quadrant = [0, 0, 0, 0]
 
             # start every new game in scan mode. No point waiting if we know we have not fired our canon yet.
             currentMode = "scan"
@@ -73,8 +76,7 @@ def play(botSocket, srvConf):
                     enemyFound = True
                     # fire down the center of the slice we just scanned.
                     fireDirection = scanRadStart + scanSliceWidth / 2
-                    botSocket.sendRecvMessage(
-                        {'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
+                    botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
                     # make sure don't try and shoot again until this shell has exploded.
                     currentMode = "wait"
                 else: enemyFound = False
@@ -88,6 +90,73 @@ def play(botSocket, srvConf):
             # continue until the next game starts.
             log(str(e), "WARNING")
             continue
+            """
+                pi/2
+            pi        0
+                3pi/2
+            """
+        try:
+            xMin = math.pi/2 + random.random()*math.pi - math.pi
+            xR = xMin if xMin > 0 else 3*math.pi/2 + random.random()*math.pi/2
+            # if Surya is approaching th boundary, should turn around in the other direction
+            getLocationReply = botSocket.sendRecvMessage({'type': 'getLocationRequest'})
+            if round(getLocationReply['x']) == srvConf['botRadius'] + 100:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : xR})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 20})
+            elif round(getLocationReply['x']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi/2 + random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 20})
+            elif round(getLocationReply['y']) == srvConf['botRadius'] + 100:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi + random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 20})
+            elif round(getLocationReply['y']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi/2 + random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 20})
+            else:
+
+                # variables that are iterated in the while loop
+                x = 0
+                i = 0
+
+                # ScaredyCat scans all four quadrants and looks for the closest target
+                while x < 2.0:
+
+                    # ScaredyCat scans the quadrant starting from x pi to 1/2 more than x. This is a quarter of a circle.
+                    # Then , it adds the server's response to the list
+                    scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': math.pi*x, 'endRadians': math.pi*(x + 1.0/2.0)})
+                    quadrant[i] = scanReply['distance']
+                    x += 1.0/2.0
+                    i += 1
+
+                # finds how far the closest enemy is from us (can't be zero)
+                minDistance = min(i for i in quadrant if i > 0)
+
+                # finds which quadrant that enemy is in
+                moveDirection = quadrant.index(minDistance)
+
+                # move in the opposite direction of the quadrant where the closest enemy is at, at a 45 degree angle.
+                # ie. if closest enemy is in quadrant 3, it will move in the direction pi * 1.0/4.0 in the first quadrant
+                if moveDirection == 0:
+                    moveDirection = math.pi * (1.0/4.0)
+                elif moveDirection == 1:
+                    moveDirection = math.pi * (3.0 / 4.0)
+                elif moveDirection == 2:
+                    moveDirection = math.pi * (5.0 / 4.0)
+                elif moveDirection == 3:
+                    moveDirection = math.pi * (7.0 / 4.0)
+
+                # Turn in a new direction
+                botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection': moveDirection})
+
+                # Request we start accelerating to max speed
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 30})
+
+        except nbipc.NetBotSocketException as e:
+            # Consider this a warning here. It may simply be that a request returned
+            # an Error reply because our health == 0 since we last checked. We can
+            # continue until the next game starts.
+            log(str(e), "WARNING")
+            continue	
 
 ##################################################################
 # Standard stuff below.
