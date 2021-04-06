@@ -45,7 +45,7 @@ def play(botSocket, srvConf):
             currentMode = "scan"
 
             # lighthouse will scan the area in this many slices (think pizza slices with this bot in the middle)
-            scanSlices = 32
+            scanSlices = 24
 
             # This is the radians of where the next scan will be
             nextScanSlice = 0
@@ -75,7 +75,8 @@ def play(botSocket, srvConf):
                     botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
                     # make sure don't try and shoot again until this shell has exploded.
                     isCanon = botSocket.sendRecvMessage({'type' : 'getCanonRequest'})
-                    if isCanon['shellInProgress'] == True:
+                    if isCanon['shellInProgress'] == False and scanReply['distance'] != 0:
+                        botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
                         currentMode = "scan"
                     else:
                         currentMode = "wait"
