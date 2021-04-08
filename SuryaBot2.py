@@ -21,11 +21,15 @@ robotName = "Surya"
 
 def play(botSocket, srvConf):
     gameNumber = 0  # The last game number bot got from the server (0 == no game has been started)
-    Precision = 2
-    maxPrecision = 64
-    lowAngle = 0
-    highAngle = 2*math.pi
-    interval = math.pi
+    # lighthouse will scan the area in this many slices (think pizza slices with this bot in the middle)
+    scanSlices = 64
+
+    # This is the radians of where the next scan will be
+    nextScanSlice = 0
+
+    # Each scan will be this wide in radians (note, math.pi*2 radians is the same as 360 Degrees)
+    scanSliceWidth = math.pi 
+
     while True:
         try:
             # Get information to determine if bot is alive (health > 0) and if a new game has started.
@@ -39,6 +43,8 @@ def play(botSocket, srvConf):
         if getInfoReply['health'] == 0:
             # we are dead, there is nothing we can do until we are alive again.
             continue
+            
+        
 
         if getInfoReply['gameNumber'] != gameNumber:
             # A new game has started. Record new gameNumber and reset any variables back to their initial state
@@ -47,12 +53,6 @@ def play(botSocket, srvConf):
 
             # start every new game in scan mode. No point waiting if we know we have not fired our canon yet.
             currentMode = "scan"
-
-            # This is the radians of where the next scan will be
-            nextScanSlice = 0
-
-            # Each scan will be this wide in radians (note, math.pi*2 radians is the same as 360 Degrees)
-            scanSliceWidth = math.pi * 2 / scanSlices
 
         try:
             if currentMode == "wait":
@@ -63,33 +63,21 @@ def play(botSocket, srvConf):
                     # we are ready to shoot again!
                     currentMode = "scan"
 
-            if currentMode == "scan":
-                while lowAngle <= highAngle:
-                    midAngle = (lowAngle + highAngle) // 2
-                    scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': lowAngle, 'endRadians': highAngle})
-                    if scanReply['distance'] != 0:
-                        distance = scanReply['distance']
-                        interval /= 2
-                        angle = angle()
-                        Precision *= 2 if Precision < maxPrecision else Precision *= 1   
-                        if Precision == maxPrecision:
-                            fireDirection = lowAngle + highAngle // 2
-                            botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
-                        if angle < midAngle:                            
-                            highAngle = midAngle   
-                        elif angle >= midAngle:
-                            lowAngle = midAngle
-                Precision = 2
-                # if we found an enemy robot with our scan
+            if currentMode == "scan":          
+                scanRadStart = nextScanSlice * scanSliceWidth
+                scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
+                scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
                 if scanReply['distance'] != 0:
-                    # fire down the center of the slice we just scanned.
-                    fireDirection = scanRadStart + scanSliceWidth / 2
-                    botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
-                    # make sure don't try and shoot again until this shell has exploded.
-                    currentMode = "wait"
+                    while scanSliceWidth > 2*math.pi/scanSlices:
+                        scanRadStart = nextScanSlice * scanSliceWidth
+                        scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
+                        scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
+                    if scanSliceWidth == 2*math.pi/ScanSlices:
+                            fireDirection = scanRadStart + scanSliceWidth / 2
+                            botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
                 else: 
                     nextScanSlice += 1
-                if nextScanSlice == maxPrecision:
+                if nextScanSlice == scanSlices:
                     nextScanSlice = 0
 
         except nbipc.NetBotSocketException as e:
