@@ -22,8 +22,7 @@ robotName = "Surya"
 def play(botSocket, srvConf):
     gameNumber = 0  # The last game number bot got from the server (0 == no game has been started)
     # lighthouse will scan the area in this many slices (think pizza slices with this bot in the middle)
-    scanSlices = 64
-
+    scanSlices = 2
     # This is the radians of where the next scan will be
     nextScanSlice = 0
 
@@ -67,19 +66,43 @@ def play(botSocket, srvConf):
                 scanRadStart = nextScanSlice * scanSliceWidth
                 scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
                 scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
+                while scanRadStart <= scanRadEnd:
+                    scanRadStart = nextScanSlice * scanSliceWidth
+                    scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
+                    midAngle = (scanRadStart + scanRadEnd) / 2
+                    scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': midAngle})
+                    if scanReply['distance'] != 0 and scanSliceWidth == math.pi/32:     
+                        fireDirection = scanRadStart + scanSliceWidth / 2
+                        botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
+                        currentMode = "wait"
+                        scanSliceWidth = math.pi
+                        scanSlices = 2
+                        break    
+                    else:
+                        nextScanSlice += 1
+                        scanSliceWidth /= 2
+                        scanSlices *= 2
+                    if  nextScanSlice == scanSlices:
+                        nextScanSlice = 0
+                '''
                 if scanReply['distance'] != 0:
-                    while scanSliceWidth > 2*math.pi/scanSlices:
-                        scanRadStart = nextScanSlice * scanSliceWidth
-                        scanRadEnd = min(scanRadStart + scanSliceWidth, math.pi * 2)
-                        scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
-                    if scanSliceWidth == 2*math.pi/ScanSlices:
+                    while scanSliceWidth > math.pi/32 if scanReply['distance'] >= 500 else math.pi/16:                        
+                        midAngle = (scanRadStart + scanRadEnd) / 2
+                    if scanSliceWidth == math.pi/32 if scanReply['distance'] >= 500 else math.pi/16:
                             fireDirection = scanRadStart + scanSliceWidth / 2
                             botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})
+                            currentMode = "wait"
+                            scanSliceWidth = math.pi
+                            scanSlices = 2
+                            break    
+                    else:
+                        scanSliceWidth /= 2
+                        scanSlices *= 2
                 else: 
                     nextScanSlice += 1
                 if nextScanSlice == scanSlices:
                     nextScanSlice = 0
-
+                '''
         except nbipc.NetBotSocketException as e:
             # Consider this a warning here. It may simply be that a request returned
             # an Error reply because our health == 0 since we last checked. We can
