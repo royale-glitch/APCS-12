@@ -92,20 +92,35 @@ def play(botSocket, srvConf):
             log(str(e), "WARNING")
             continue
             
+            '''
+                pi/2
+            pi        0
+               3pi/2            
+            '''
         try:
 
             # if ScaredyCat is at the arena boundary, it should stop
             getLocationReply = botSocket.sendRecvMessage({'type': 'getLocationRequest'})
-            if round(getLocationReply['x']) == srvConf['botRadius'] + 100:
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['x']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['y']) == srvConf['botRadius'] + 100:
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['y']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
+            xMin = math.pi/2+random.random()*math.pi-math.pi
+            xR = xMin if xMin > 0 else 3*math.pi/2+random.random()*math.pi/2
+            #lower x boundary
+            if round(getLocationReply['x']) <= srvConf['botRadius'] + 200:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : xR})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
+            #upper x boundary
+            elif round(getLocationReply['x']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 200:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi/2+random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})                
+            #lower y boundary
+            elif round(getLocationReply['y']) <= srvConf['botRadius'] + 200:
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
+            #upper y boundary
+            elif round(getLocationReply['y']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 200:                
+                botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi+random.random()*math.pi})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
             else:
-
+                log('X: %s, Y: %s' % (getLocationReply['x'], getLocationReply['y']), 'INFO')
                 # variables that are iterated in the while loop
                 x = 0
                 i = 0
@@ -128,6 +143,11 @@ def play(botSocket, srvConf):
 
                 # move in the opposite direction of the quandrant where the closest enemy is at, at a 45 degree angle.
                 # ie. if closest enemy is in quadrant 3, it will move in the direction pi * 1.0/4.0 in the first quadrant
+                '''
+                    1   |    0
+                    ----|-----
+                    2   |    3
+                '''
                 if moveDirection == 0:
                     moveDirection = math.pi * (5.0/4.0)
                 elif moveDirection == 1:
@@ -141,7 +161,7 @@ def play(botSocket, srvConf):
                 botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection': moveDirection})
 
                 # Request we start accelerating to max speed
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 30})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 50})
 
         except nbipc.NetBotSocketException as e:
             # Consider this a warning here. It may simply be that a request returned
