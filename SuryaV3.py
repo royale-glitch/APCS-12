@@ -96,13 +96,13 @@ def play(botSocket, srvConf):
 
             # if ScaredyCat is at the arena boundary, it should stop
             getLocationReply = botSocket.sendRecvMessage({'type': 'getLocationRequest'})
-            if round(getLocationReply['x']) <= srvConf['botRadius'] + 100:
+            if round(getLocationReply['x']) == srvConf['botRadius'] + 100:
                 botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['x']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 100:
+            elif round(getLocationReply['x']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
                 botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['y']) <= srvConf['botRadius'] + 100:
+            elif round(getLocationReply['y']) == srvConf['botRadius'] + 100:
                 botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
-            elif round(getLocationReply['y']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 100:
+            elif round(getLocationReply['y']) == srvConf['arenaSize'] - srvConf['botRadius'] - 100:
                 botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 0})
             else:
 
