@@ -65,8 +65,10 @@ def play(botSocket, srvConf):
                 scanRadStart = 0
                 scanRadEnd = math.pi
                 
-                while scanRadStart <= scanRadEnd:
-                    #log("start: %s, end: %s" % (scanRadStart, scanRadEnd), "INFO")
+                while scanRadStart < scanRadEnd:
+                    log("start: %s, end: %s" % (scanRadStart, scanRadEnd), "INFO")
+                    if scanRadEnd > 2*math.pi:
+                        scanRadEnd = 2*math.pi
                     scanReply = botSocket.sendRecvMessage({'type': 'scanRequest', 'startRadians': scanRadStart, 'endRadians': scanRadEnd})
                     necWidth = math.pi/32 if scanReply['distance'] >= 500 else math.pi/16
                     #log('distance: %s' % scanReply['distance'], 'INFO')
@@ -74,15 +76,14 @@ def play(botSocket, srvConf):
                         fireDirection = scanRadStart + scanSliceWidth / 2
                         botSocket.sendRecvMessage({'type': 'fireCanonRequest', 'direction': fireDirection, 'distance': scanReply['distance']})                        
                         currentMode = "wait"
-                        
+                        break
                     elif scanReply['distance'] != 0 and scanSliceWidth >= necWidth:
                         scanSliceWidth /= 2
                         scanRadEnd = (scanRadStart + scanRadEnd) / 2
                     else:
                         scanRadStart = scanRadEnd
                         scanRadEnd = scanRadStart + scanSliceWidth
-                    if currentMode == "wait":
-                        break
+                        
                 scanSliceWidth = math.pi
                 
         except nbipc.NetBotSocketException as e:
@@ -104,23 +105,22 @@ def play(botSocket, srvConf):
             xMin = math.pi/2+random.random()*math.pi-math.pi
             xR = xMin if xMin > 0 else 3*math.pi/2+random.random()*math.pi/2
             #lower x boundary
-            if round(getLocationReply['x']) <= srvConf['botRadius'] + 200:
+            if round(getLocationReply['x']) <= srvConf['botRadius'] + 400:
                 botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : xR})
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 55})
             #upper x boundary
-            elif round(getLocationReply['x']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 200:
+            elif round(getLocationReply['x']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 400:
                 botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi/2+random.random()*math.pi})
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})                
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 55})                
             #lower y boundary
-            elif round(getLocationReply['y']) <= srvConf['botRadius'] + 200:
+            elif round(getLocationReply['y']) <= srvConf['botRadius'] + 400:
                 botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : random.random()*math.pi})
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 55})
             #upper y boundary
-            elif round(getLocationReply['y']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 200:                
+            elif round(getLocationReply['y']) >= srvConf['arenaSize'] - srvConf['botRadius'] - 400:                
                 botSocket.sendRecvMessage({'type' : 'setDirectionRequest', 'requestedDirection' : math.pi+random.random()*math.pi})
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 45})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 55})
             else:
-                log('X: %s, Y: %s' % (getLocationReply['x'], getLocationReply['y']), 'INFO')
                 # variables that are iterated in the while loop
                 x = 0
                 i = 0
@@ -141,27 +141,30 @@ def play(botSocket, srvConf):
                 # finds which quadrant that enemy is in
                 moveDirection = quadrant.index(minDistance)
 
-                # move in the opposite direction of the quandrant where the closest enemy is at, at a 45 degree angle.
-                # ie. if closest enemy is in quadrant 3, it will move in the direction pi * 1.0/4.0 in the first quadrant
+                # move along the normal line of the enemy.
+                # ie. if closest enemy is in quadrant 0, it will move in the direction 3pi/4 or 7pi/4
                 '''
-                    1   |    0
-                    ----|-----
-                    2   |    3
+                      pi/2
+                    1   |   0
+                 pi ----|----  0
+                    2   |   3
+                      3pi/2
                 '''
+                sRand = random.randint(1,2)
                 if moveDirection == 0:
-                    moveDirection = math.pi * (5.0/4.0)
+                    moveDirection = math.pi * (3.0/4.0) if sRand == 1 else math.pi * (7.0/4.0)
                 elif moveDirection == 1:
-                    moveDirection = math.pi * (7.0 / 4.0)
+                    moveDirection = math.pi * (5.0 / 4.0) if sRand == 1 else math.pi * (1.0/4.0)
                 elif moveDirection == 2:
-                    moveDirection = math.pi * (1.0 / 4.0)
+                    moveDirection = math.pi * (1.0 / 4.0) if sRand == 1 else math.pi * (5.0/4.0)
                 elif moveDirection == 3:
-                    moveDirection = math.pi * (3.0 / 4.0)
+                    moveDirection = math.pi * (7.0/4.0) if sRand == 1 else math.pi * (3.0/4.0)
 
                 # Turn in a new direction
                 botSocket.sendRecvMessage({'type': 'setDirectionRequest', 'requestedDirection': moveDirection})
 
                 # Request we start accelerating to max speed
-                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 50})
+                botSocket.sendRecvMessage({'type': 'setSpeedRequest', 'requestedSpeed': 55})
 
         except nbipc.NetBotSocketException as e:
             # Consider this a warning here. It may simply be that a request returned
