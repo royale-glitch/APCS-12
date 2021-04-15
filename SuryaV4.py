@@ -142,7 +142,7 @@ def play(botSocket, srvConf):
                 # finds which quadrant that enemy is in
                 moveDirection = quadrant.index(minDistance)
 
-                # move perpendicular to the enemy.
+                # move perpendicular to the enemy
                 # ie. if closest enemy is in quadrant 0, it will move in the direction 3pi/4 to 7pi/4
                 '''
                       pi/2
